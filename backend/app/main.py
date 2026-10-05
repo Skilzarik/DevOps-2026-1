@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from . import models
+from sqlalchemy import text
 from .database import SessionLocal
 from .routes import users, musicians, discs, sales
 
@@ -29,7 +30,7 @@ app.include_router(sales.router)
 def healthcheck():
     db = SessionLocal()
     try:
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
         return {"status": "ok", "database": "connected"}
     except Exception as e:
         return {"status": "error", "database": "disconnected", "error": str(e)}
