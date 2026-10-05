@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from . import models
+from .database import SessionLocal
 from .routes import users, musicians, discs, sales
 
 app = FastAPI(
