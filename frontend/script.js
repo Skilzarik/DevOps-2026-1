@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000';
+const API_URL = '';
 
 function getToken() { return localStorage.getItem('token'); }
 function setToken(token) { localStorage.setItem('token', token); }
