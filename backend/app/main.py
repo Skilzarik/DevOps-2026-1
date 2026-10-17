@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from starlette.responses import JSONResponse
 from . import models
 from sqlalchemy import text
 from .database import SessionLocal
@@ -33,7 +34,10 @@ def healthcheck():
         db.execute(text("SELECT 1"))
         return {"status": "ok", "database": "connected"}
     except Exception as e:
-        return {"status": "error", "database": "disconnected", "error": str(e)}
+        return JSONResponse(
+            status_code=503,
+            content={"status": "error", "database": "disconnected", "error": str(e)},
+        )
     finally:
         db.close()
 
