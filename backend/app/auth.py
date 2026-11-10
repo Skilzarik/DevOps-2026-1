@@ -42,7 +42,7 @@ def get_current_user(
         if username is None:
             raise credentials_exception
     except JWTError:
-        raise credentials_exception
+        raise credentials_exception from None
     
     user = db.query(models.User).filter(models.User.username == username).first()
     if user is None:

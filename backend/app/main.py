@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from starlette.responses import JSONResponse
-from . import models
 from sqlalchemy import text
 from .database import SessionLocal
 from .routes import users, musicians, discs, sales

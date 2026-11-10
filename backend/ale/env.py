@@ -1,14 +1,9 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
-import sys
-import os
-   
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from app.database import settings
 from app.models import Base
 
 # this is the Alembic Config object, which provides
@@ -18,7 +13,11 @@ config = context.config
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+    fileConfig(config.config_file_name, disable_existing_loggers=False)
+
+# Строка подключения берётся из настроек приложения (переменная окружения DATABASE_URL),
+# а не из alembic.ini: пароли не хранятся в репозитории.
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL.replace("%", "%%"))
 
 # add your model's MetaData object here
 # for 'autogenerate' support

@@ -1,0 +1,12 @@
+# Прямые зависимости приложения. Точные версии фиксируются командой `make lock`
+# в requirements.txt (его и нужно ставить; руками файл не править).
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30
+sqlalchemy>=2.0.36,<2.1
+psycopg[binary]>=3.2
+alembic>=1.13
+python-jose[cryptography]>=3.3
+passlib[bcrypt]>=1.7.4
+python-multipart>=0.0.12
+pydantic-settings>=2.5
+bcrypt==4.0.1

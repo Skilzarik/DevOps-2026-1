@@ -1,10 +1,10 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Literal, Optional
 from datetime import datetime
 
 class UserBase(BaseModel):
     username: str
-    role: str = "seller"
+    role: Literal["admin", "seller"] = "seller"
 
 class UserCreate(UserBase):
     password: str

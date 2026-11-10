@@ -42,3 +42,10 @@ desktop.ini
 .coverage
 htmlcov/
 .tox/
+
+
+.env.test
+backend/reports/
+backups/
+mutants/
+.ruff_cache/
