@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from .. import auth, models, schemas
 from ..database import get_db
-from .. import models, schemas, auth
 
 router = APIRouter(prefix="/discs", tags=["discs"])
 
@@ -43,7 +45,7 @@ def restock_disc(
     disc = db.query(models.Disc).filter(models.Disc.id == disc_id).first()
     if not disc:
         raise HTTPException(status_code=404, detail="Диск не найден")
-    
+
     if restock_data.quantity <= 0:
         raise HTTPException(status_code=400, detail="Количество должно быть больше нуля")
 
@@ -61,13 +63,13 @@ def delete_disc(
     disc = db.query(models.Disc).filter(models.Disc.id == disc_id).first()
     if not disc:
         raise HTTPException(status_code=404, detail="Disc not found")
-    
+
     if disc.sales:
         raise HTTPException(
             status_code=400,
             detail="Cannot delete disc with existing sales"
         )
-    
+
     db.delete(disc)
     db.commit()
     return None

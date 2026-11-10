@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+
+from .. import auth, models, schemas
 from ..database import get_db
-from .. import models, schemas, auth
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
@@ -34,7 +35,7 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     access_token = auth.create_access_token(data={"sub": db_user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
