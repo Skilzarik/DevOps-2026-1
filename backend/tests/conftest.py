@@ -114,9 +114,7 @@ def seller_headers(make_headers):
 
 @pytest.fixture
 def musician(client, admin_headers):
-    resp = client.post(
-        "/musicians/", json={"name": "Muse", "genre": "Rock"}, headers=admin_headers
-    )
+    resp = client.post("/musicians/", json={"name": "Muse", "genre": "Rock"}, headers=admin_headers)
     assert resp.status_code == 201, resp.text
     return resp.json()
 

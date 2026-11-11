@@ -19,9 +19,7 @@ def _sell(client, headers, disc_id, quantity):
 
 
 def test_admin_creates_musician(client, admin_headers):
-    resp = client.post(
-        "/musicians/", json={"name": "Muse", "genre": "Rock"}, headers=admin_headers
-    )
+    resp = client.post("/musicians/", json={"name": "Muse", "genre": "Rock"}, headers=admin_headers)
     assert resp.status_code == 201
     body = resp.json()
     assert body["name"] == "Muse"

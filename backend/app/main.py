@@ -9,9 +9,7 @@ from .database import SessionLocal
 from .routes import discs, musicians, sales, users
 
 app = FastAPI(
-    title="Music Store API",
-    description="API for music store management system",
-    version="0.1.0"
+    title="Music Store API", description="API for music store management system", version="0.1.0"
 )
 
 app.add_middleware(
@@ -27,6 +25,7 @@ app.include_router(musicians.router)
 app.include_router(discs.router)
 app.include_router(sales.router)
 
+
 @app.get("/health")
 def healthcheck():
     db = SessionLocal()
@@ -41,8 +40,10 @@ def healthcheck():
     finally:
         db.close()
 
+
 app.mount("/static", StaticFiles(directory="../frontend"), name="static")
+
 
 @app.get("/")
 async def read_index():
-    return FileResponse('../frontend/index.html')
+    return FileResponse("../frontend/index.html")
