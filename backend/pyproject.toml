@@ -1,0 +1,46 @@
+# Любое изменение этого файла выделяется в описании Pull Request.
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+# E/W - стиль pycodestyle, F - ошибки pyflakes, I - порядок импортов, B - типичные баги.
+select = ["E", "F", "W", "I", "B"]
+ignore = []
+
+[tool.ruff.lint.flake8-bugbear]
+# Depends() в значениях по умолчанию - штатный приём FastAPI, а не ошибка B008.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Security"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "helpers"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = """
+  -ra --strict-markers
+  --junitxml=reports/junit.xml
+  --cov=app
+  --cov-report=term-missing:skip-covered
+  --cov-report=xml:reports/coverage.xml
+  --cov-report=html:reports/htmlcov
+"""
+markers = [
+  "unit: быстрые тесты логики без базы данных",
+  "integration: тесты API вместе с PostgreSQL (отдельная база *_test)",
+  "migrations: проверки миграций на чистой и заполненной базе",
+]
+
+[tool.coverage.run]
+source = ["app"]
+branch = true
+
+[tool.coverage.report]
+# Нижняя граница. Снижать запрещено: scripts/check_policy.py сверяет её с quality-baseline.txt.
+fail_under = 80
+show_missing = true
+
+[tool.bandit]
+exclude_dirs = ["tests", "venv"]

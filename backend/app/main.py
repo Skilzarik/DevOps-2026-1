@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from starlette.responses import JSONResponse
-from . import models
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
+from starlette.responses import JSONResponse
+
 from .database import SessionLocal
-from .routes import users, musicians, discs, sales
+from .routes import discs, musicians, sales, users
 
 app = FastAPI(
     title="Music Store API",

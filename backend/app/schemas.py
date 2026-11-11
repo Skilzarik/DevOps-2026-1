@@ -1,17 +1,19 @@
-from pydantic import BaseModel, Field
-from typing import Optional
 from datetime import datetime
+from typing import Literal, Optional
+
+from pydantic import BaseModel, Field
+
 
 class UserBase(BaseModel):
     username: str
-    role: str = "seller"
+    role: Literal["admin", "seller"] = "seller"
 
 class UserCreate(UserBase):
     password: str
 
 class UserResponse(UserBase):
     id: int
-    
+
     class Config:
         from_attributes = True
 
@@ -33,7 +35,7 @@ class MusicianCreate(MusicianBase):
 class MusicianResponse(MusicianBase):
     id: int
     created_by: Optional[int] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -49,7 +51,7 @@ class DiscCreate(DiscBase):
 class DiscResponse(DiscBase):
     id: int
     created_by: Optional[int] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -65,6 +67,6 @@ class SaleResponse(SaleBase):
     total_price: float
     sold_at: datetime
     seller_id: Optional[int] = None
-    
+
     class Config:
         from_attributes = True

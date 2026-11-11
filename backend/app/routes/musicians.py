@@ -1,8 +1,10 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+
+from .. import auth, models, schemas
 from ..database import get_db
-from .. import models, schemas, auth
 
 router = APIRouter(prefix="/musicians", tags=["musicians"])
 
@@ -35,7 +37,20 @@ def delete_musician(
     musician = db.query(models.Musician).filter(models.Musician.id == musician_id).first()
     if not musician:
         raise HTTPException(status_code=404, detail="Musician not found")
-    
+
+    has_sales = (
+        db.query(models.Sale)
+        .join(models.Disc, models.Sale.disc_id == models.Disc.id)
+        .filter(models.Disc.musician_id == musician_id)
+        .first()
+        is not None
+    )
+    if has_sales:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot delete musician whose discs have sales",
+        )
+
     db.delete(musician)
     db.commit()
     return None
