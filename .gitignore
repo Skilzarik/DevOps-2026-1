@@ -49,3 +49,6 @@ backend/reports/
 backups/
 mutants/
 .ruff_cache/
+
+# Лаб. 4: настройки контейнерного окружения (пароли)
+.env.docker

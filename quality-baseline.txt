@@ -2,6 +2,6 @@
 # Значения можно ТОЛЬКО повышать. Снижение блокируется scripts/check_policy.py,
 # а любое изменение этого файла должно быть выделено в описании Pull Request.
 COVERAGE_MIN=80
-TESTS_MIN=85
+TESTS_MIN=86
 RUFF_IGNORES=0
 TRACEABILITY_MIN=40

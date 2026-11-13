@@ -56,3 +56,11 @@ def test_index_page_is_served(client):
     resp = client.get("/")
     assert resp.status_code == 200
     assert "text/html" in resp.headers["content-type"]
+
+
+def test_response_contains_instance_id_header(client):
+    from app.main import INSTANCE_ID
+
+    response = client.get("/health")
+    assert INSTANCE_ID
+    assert response.headers["X-Instance-ID"] == INSTANCE_ID

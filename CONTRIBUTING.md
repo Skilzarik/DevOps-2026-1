@@ -54,6 +54,31 @@ Pull Request можно создавать только при зелёном `m
 
 ---
 
+## 2а. Контейнерное окружение (Лаб. 4)
+
+Команды: `make up`, `make down`, `make container-check`, `make container-backup`,
+`make container-restore FILE=...`. Описание: [docs/CONTAINERS.md](docs/CONTAINERS.md).
+
+Изменения `Dockerfile`, `compose.yaml`, `docker/` разрешено вносить в Pull Request только после
+успешного `make container-check` (его результат прикладывается к PR).
+
+**Запрещено:**
+
+- тег `latest` и образы без явного тега;
+- запуск процессов от root (в Dockerfile обязателен `USER` с непривилегированным пользователем);
+- секреты в образе, в `Dockerfile` и в `compose.yaml` (только переменные окружения из `.env.docker`,
+  которого нет в git);
+- отключение healthcheck (`disable: true`, `HEALTHCHECK NONE`);
+- публикация портов, кроме порта nginx: порты БД и приложения наружу не открываются;
+- контейнеры без лимитов памяти и процессора; `privileged`, `network_mode: host`, монтирование `docker.sock`.
+
+Эти правила проверяет `scripts/check_container_policy.py` (входит в `make container-check`).
+
+**Критические файлы приёмки:** `Dockerfile`, `.dockerignore`, `compose.yaml`, `docker/**`,
+`scripts/container_check.sh`, `scripts/check_container_policy.py`. Любое их изменение выделяется в описании PR.
+
+---
+
 ## 3. Стиль коммитов
 
 Используется стандарт **Conventional Commits**:

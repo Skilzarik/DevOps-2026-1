@@ -12,12 +12,17 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     role = Column(String, nullable=False, default="seller")
-    musicians = relationship("Musician", back_populates="creator", foreign_keys="Musician.created_by")
+    musicians = relationship(
+        "Musician",
+        back_populates="creator",
+        foreign_keys="Musician.created_by",
+    )
     discs = relationship("Disc", back_populates="creator", foreign_keys="Disc.created_by")
     sales = relationship("Sale", back_populates="seller", foreign_keys="Sale.seller_id")
 
     def __repr__(self):
         return f"<User(id={self.id}, username={self.username}, role={self.role})>"
+
 
 class Musician(Base):
     __tablename__ = "musicians"
@@ -31,6 +36,7 @@ class Musician(Base):
 
     def __repr__(self):
         return f"<Musician(id={self.id}, name={self.name})>"
+
 
 class Disc(Base):
     __tablename__ = "discs"
@@ -47,6 +53,7 @@ class Disc(Base):
 
     def __repr__(self):
         return f"<Disc(id={self.id}, title={self.title}, stock={self.stock})>"
+
 
 class Sale(Base):
     __tablename__ = "sales"
