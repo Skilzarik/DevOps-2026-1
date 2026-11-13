@@ -6,16 +6,15 @@ name: music-store
 x-app-common: &app-common
   image: music-store:${APP_VERSION:?Задайте APP_VERSION в .env.docker}
   restart: unless-stopped
-  init: true                  # корректная передача сигналов и очистка зомби-процессов
-  read_only: true             # корневая файловая система только для чтения
+  init: true
+  read_only: true
   tmpfs:
     - /tmp
   cap_drop:
-    - ALL                     # приложению не нужны привилегии Linux
+    - ALL
   security_opt:
     - no-new-privileges:true
-  pids_limit: 200
-  stop_grace_period: 30s      # время на завершение запросов после SIGTERM
+  stop_grace_period: 30s
   networks:
     - backend
   depends_on:
@@ -28,6 +27,7 @@ x-app-common: &app-common
       limits:
         cpus: "0.50"
         memory: 256M
+        pids: 200
       reservations:
         memory: 64M
 
