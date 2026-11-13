@@ -1,5 +1,5 @@
 # Единый командный интерфейс проекта. Все команды запускаются из корня репозитория.
-# Критический файл приёмки: ослаблять проверки нельзя (CONTRIBUTING.md).
+# Критический файл приёмки: ослаблять проверки нельзя (CONTRIBUTING.md, раздел 2).
 
 SHELL := /bin/bash
 PYTHON ?= python3
@@ -64,3 +64,39 @@ verify: policy quality sast test ## Полный набор обязательн
 
 clean: ## Удалить отчёты и кэши
 	rm -rf $(BACKEND)/reports $(BACKEND)/.pytest_cache $(BACKEND)/.ruff_cache $(BACKEND)/.coverage
+
+# ---------- Лаб. 4: контейнерное окружение (запускать на Linux-машине с Docker) ----------
+COMPOSE := docker compose --env-file .env.docker
+
+container-env: ## Создать .env.docker со случайными паролями (в git не попадает)
+	bash scripts/container_env.sh
+
+build: ## Собрать образ приложения
+	@bash scripts/container_env.sh >/dev/null
+	$(COMPOSE) build
+
+up: ## Собрать и запустить окружение: nginx, 2 экземпляра приложения, БД
+	bash scripts/container_up.sh
+
+down: ## Остановить окружение (данные в volume сохраняются)
+	$(COMPOSE) down
+
+ps: ## Состояние контейнеров
+	$(COMPOSE) ps
+
+logs: ## Журналы контейнеров (Ctrl+C для выхода)
+	$(COMPOSE) logs -f --tail 50
+
+container-check: ## Автоматическая проверка контейнерного окружения
+	bash scripts/container_check.sh
+
+container-backup: ## Резервная копия БД из контейнера в backups/
+	bash scripts/container_backup.sh
+
+container-restore: ## Восстановить БД в текущем окружении: make container-restore FILE=backups/x.dump
+	@test -n "$(FILE)" || { echo "Укажите файл: make container-restore FILE=backups/<файл>.dump"; exit 2; }
+	bash scripts/container_restore.sh "$(FILE)"
+
+container-restore-new: ## Восстановить БД в НОВЫЙ volume: make container-restore-new FILE=backups/x.dump
+	@test -n "$(FILE)" || { echo "Укажите файл: make container-restore-new FILE=backups/<файл>.dump"; exit 2; }
+	bash scripts/container_restore.sh --new-volume "$(FILE)"

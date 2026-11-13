@@ -1,0 +1,35 @@
+# Всё, что не должно попадать в контекст сборки образа (и тем более в сам образ)
+.git
+.gitignore
+.github
+.vscode
+.idea
+
+# Секреты и локальные настройки
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!.env.docker.example
+backups/
+
+# Окружения и кэши Python
+**/venv
+**/.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+**/.coverage
+backend/reports
+backend/tests
+
+# Служебные файлы проекта, не нужные приложению
+docs
+scripts
+docker
+compose.yaml
+Dockerfile
+Makefile
+*.md
