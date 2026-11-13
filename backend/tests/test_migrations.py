@@ -44,8 +44,7 @@ def _seed_valid_rows(engine) -> None:
         conn.execute(text("INSERT INTO musicians (id, name, genre) VALUES (1, 'm', 'g')"))
         conn.execute(
             text(
-                "INSERT INTO discs (id, title, musician_id, price, stock) "
-                "VALUES (1, 'd', 1, 10, 5)"
+                "INSERT INTO discs (id, title, musician_id, price, stock) VALUES (1, 'd', 1, 10, 5)"
             )
         )
 

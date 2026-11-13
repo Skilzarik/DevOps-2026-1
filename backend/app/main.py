@@ -1,3 +1,6 @@
+import os
+import socket
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -9,9 +12,7 @@ from .database import SessionLocal
 from .routes import discs, musicians, sales, users
 
 app = FastAPI(
-    title="Music Store API",
-    description="API for music store management system",
-    version="0.1.0"
+    title="Music Store API", description="API for music store management system", version="0.1.0"
 )
 
 app.add_middleware(
@@ -27,6 +28,17 @@ app.include_router(musicians.router)
 app.include_router(discs.router)
 app.include_router(sales.router)
 
+INSTANCE_ID = os.environ.get("INSTANCE_ID") or socket.gethostname()
+
+
+@app.middleware("http")
+async def add_instance_id_header(request, call_next):
+    """Показывает, какой экземпляр приложения обработал запрос (Лаб. 4)."""
+    response = await call_next(request)
+    response.headers["X-Instance-ID"] = INSTANCE_ID
+    return response
+
+
 @app.get("/health")
 def healthcheck():
     db = SessionLocal()
@@ -41,8 +53,10 @@ def healthcheck():
     finally:
         db.close()
 
+
 app.mount("/static", StaticFiles(directory="../frontend"), name="static")
+
 
 @app.get("/")
 async def read_index():
-    return FileResponse('../frontend/index.html')
+    return FileResponse("../frontend/index.html")
