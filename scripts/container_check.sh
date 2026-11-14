@@ -76,10 +76,17 @@ for svc in db app1 app2 nginx; do
 done
 
 step "5. Порты: БД и приложение наружу не публикуются"
-[ -z "$(compose port db 5432 2>/dev/null)" ] && ok "порт БД не опубликован" || bad "порт БД опубликован"
-[ -z "$(compose port app1 8000 2>/dev/null)" ] && [ -z "$(compose port app2 8000 2>/dev/null)" ] \
+# Опубликованные на хост порты контейнера (пусто, если ничего не опубликовано).
+# Команда `docker compose port` для закрытого порта печатает ":0", поэтому смотрим в docker inspect.
+published_ports() {
+  docker inspect -f '{{range $port, $bindings := .NetworkSettings.Ports}}{{if $bindings}}{{$port}} {{end}}{{end}}' \
+    "$(compose ps -q "$1" | head -n1)" 2>/dev/null
+}
+[ -z "$(published_ports db)" ] && ok "порт БД не опубликован" || bad "порт БД опубликован: $(published_ports db)"
+[ -z "$(published_ports app1)$(published_ports app2)" ] \
   && ok "приложение недоступно напрямую (порты не опубликованы)" || bad "порт приложения опубликован"
-[ -n "$(compose port nginx 8080 2>/dev/null)" ] && ok "наружу опубликован только nginx" || bad "nginx не публикует порт"
+published_ports nginx | grep -q '8080/tcp' && ok "наружу опубликован только nginx" || bad "nginx не публикует порт"
+[ "$(published_ports nginx | wc -w)" = 1 ] && ok "у nginx опубликован ровно один порт" || bad "у nginx опубликовано не 1 порт"
 
 step "6. Доступ через nginx и распределение запросов"
 code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$URL/health")"
